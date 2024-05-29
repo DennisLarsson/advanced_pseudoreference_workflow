@@ -30,7 +30,7 @@ jobs:
 
     - name: Convert repository name to lowercase
       id: repo-name-lowercase
-      run: echo "REPO=$(echo "${{ github.repository }}" | awk '{print tolower($0)}')" >> $GITHUB_ENV
+      run: echo "REPO=$(echo "${{ github.repository }}" | awk '{print tolower($0)}')" >> $GITHUB_OUTPUT
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5.3.0
