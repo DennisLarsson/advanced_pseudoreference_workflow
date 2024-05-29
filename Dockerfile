@@ -7,9 +7,11 @@ RUN apt-get update && apt-get install -y \
     default-jdk \
     unzip
 
-# Download and install Nextflow
-RUN wget -qO- https://get.nextflow.io | bash
-RUN mv nextflow /usr/local/bin
+# Download and install Nextflow 24.04.0-edge
+RUN wget -qO- https://get.nextflow.io | bash && \
+    chmod +x nextflow && \
+    mv nextflow /usr/local/bin && \
+    NXF_VER=24.04.0-edge nextflow info
 
 # Set the working directory
 WORKDIR /data
