@@ -20,7 +20,7 @@ jobs:
     - name: Cache Docker layers
       uses: actions/cache@v4.0.2
       with:
-        path: /temp/.buildx-cache
+        path: /tmp/.buildx-cache
         key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-buildx-
@@ -38,5 +38,5 @@ jobs:
         context: .
         push: true
         tags: ghcr.io/${{ env.REPO }}:latest
-        cache-from: type=local,src=/temp/.buildx-cache
-        cache-to: type=local,dest=/temp/.buildx-cache
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
