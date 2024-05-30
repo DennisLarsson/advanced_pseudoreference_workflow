@@ -17,4 +17,4 @@ RUN nextflow info
 # Set the working directory
 WORKDIR /data
 
-COPY main.nf /data/main.nf
+COPY main.nf .
