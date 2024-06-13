@@ -1,5 +1,5 @@
 process optimization {
-    container 'stacks2'
+    container 'ghcr.io/dennislarsson/stacks2-image:refs-tags-1.1.1-4480f63'
     "./optimization.py"
 }
 
