@@ -3,13 +3,56 @@ name: asrw
 on:
   push:
     branches: [ "*" ]
+    tags: [ "*" ]
   pull_request:
     branches: [ "*" ]
 
   workflow_dispatch:
 
 jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4.1.6
+
+    - name: Set up Docker buildsx
+      uses: docker/setup-buildx-action@v3.3.0
+
+    - name: Cache test Docker layers
+      uses: actions/cache@v4.0.2
+      with:
+        path: /tmp/.buildx-test.cache
+        key: ${{ runner.os }}-test-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-test-buildx-
+    
+    - name: Set up Python test environment
+      uses: actions/setup-python@v5.1.0
+      with:
+        python-version: 3.9
+
+    - name: Run unittest
+      run: python -m unittest tests.test_parameter_optimization
+
+    - name: create test Dockerfile
+      run: cat Dockerfile tests/Dockerfile.extended > Dockerfile.test
+
+    - name: Build test Docker image
+      uses: docker/build-push-action@v5.3.0
+      with:
+        context: .
+        file: ./Dockerfile.test
+        tags: param-opt-test
+        cache-from: type=local,src=/tmp/.buildx-test.cache
+        cache-to: type=local,dest=/tmp/.buildx-test.cache
+        push: false
+        load: true
+
+    - name: Run test Docker container
+      run: docker run param-opt-test
+
   build:
+    needs: test
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4.1.6
@@ -32,11 +75,19 @@ jobs:
       id: repo-name-lowercase
       run: echo "REPO=$(echo "${{ github.repository }}" | awk '{print tolower($0)}')" >> $GITHUB_OUTPUT
 
+    - name: Get short SHA
+      id: short-sha
+      run: echo "::set-output name=sha::$(git rev-parse --short=7 ${{ github.sha }})"
+
+    - name: Get branch name
+      id: get-branch
+      run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-')"
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v5.3.0
       with:
         context: .
         push: true
-        tags: ghcr.io/${{ steps.repo-name-lowercase.outputs.REPO }}:latest
+        tags: ghcr.io/${{ steps.repo-name-lowercase.outputs.REPO }}:${{ steps.get-branch.outputs.branch }}-${{ steps.short-sha.outputs.sha }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
