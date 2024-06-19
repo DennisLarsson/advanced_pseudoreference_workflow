@@ -20,6 +20,7 @@ process download_samples {
     output:
     file(*.fq.gz) into samples_ch
 
+    script:
     """
     while IFS= read -r line; do
         sample_name=$(echo "$line" | cut -f1)
