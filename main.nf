@@ -34,36 +34,6 @@ process download_samples {
     """
 }
 
-process optimization {
-    container 'ghcr.io/dennislarsson/stacks2-image:refs-tags-1.1.1-4480f63'
-    
-    input:
-    file samples from samples_ch.collect()
-    file popmap from popmap_ch
-
-// Make sure that all files are available and create the popmap file or download it. 
-// Perhaps input it as a parameter?
-    script:
-    """
-    ./parameter_optimization.py --popmap popmap_test --samples /test_samples/ --min_val 1 --max_val 3
-    """
-}
-
-process preprocessing {
-    container 'preprocessing'
-    "./preprocessing.py"
-}
-
-process pseudoreference {
-    container 'pseudoreference'
-    "./pseudoreference.py"
-}
-
-process postprocessing {
-    container 'stacks2'
-    "./postprocessing"
-}
-
 workflow {
     download_samples
 }
