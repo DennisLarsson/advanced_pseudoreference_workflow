@@ -11,8 +11,7 @@ Channel
 
 process download_samples {
     container 'ghcr.io/dennislarsson/download-image:refs-tags-1.0.0-e2e677d'
-// Perhaps we want a universal json with all samples and their gdrive ids.
-// Then we can load in a popmap file and just download those samples that are in the popmap.
+
     input:
     file samples_json from samples_json_ch
     file popmap from popmap_ch
@@ -29,7 +28,7 @@ process download_samples {
             echo "Error: Sample ${sample_name}.fq.gz not found in samples.json" >&2
             exit 1
         else
-            gdown $id --output ${sample_name}.fq.gz
+            gdown $id --output "${sample_name}.fq.gz"
         fi
     done < $popmap
     """
