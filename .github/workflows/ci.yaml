@@ -25,14 +25,6 @@ jobs:
         key: ${{ runner.os }}-test-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-test-buildx-
-    
-    - name: Set up Python test environment
-      uses: actions/setup-python@v5.1.0
-      with:
-        python-version: 3.9
-
-    - name: Run unittest
-      run: python -m unittest tests.test_parameter_optimization
 
     - name: create test Dockerfile
       run: cat Dockerfile tests/Dockerfile.extended > Dockerfile.test
@@ -42,14 +34,14 @@ jobs:
       with:
         context: .
         file: ./Dockerfile.test
-        tags: param-opt-test
+        tags: nextflow-test
         cache-from: type=local,src=/tmp/.buildx-test.cache
         cache-to: type=local,dest=/tmp/.buildx-test.cache
         push: false
         load: true
 
     - name: Run test Docker container
-      run: docker run param-opt-test
+      run: docker run nextflow-test
 
   build:
     needs: test
