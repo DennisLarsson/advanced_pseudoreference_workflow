@@ -1,24 +1,36 @@
 params.samples_json = "samples.json"
+params.popmap = "popmap"
 
 Channel
     .fromPath(params.samples_json)
     .set { samples_json_ch }
 
+Channel
+    .fromPath(params.popmap)
+    .set { popmap_ch }
+
 process download_samples {
     container 'ghcr.io/dennislarsson/download-image:refs-tags-1.0.0-e2e677d'
-
+// Perhaps we want a universal json with all samples and their gdrive ids.
+// Then we can load in a popmap file and just download those samples that are in the popmap.
     input:
     file samples_json from samples_json_ch
+    file popmap from popmap_ch
 
     output:
     file(*.fq.gz) into samples_ch
 
     """
-    for key in $(jq -r 'keys[]' $samples_json); 
-    do
-        id=$(jq -r ".$key" $samples_json)
-        gdown $id --output $key
-    done
+    while IFS= read -r line; do
+        sample_name=$(echo "$line" | cut -f1)
+        id=$(jq -r --arg key "${sample_name}.fq.gz" '.[$key]' $samples_json)
+        if [[ $id == "null" ]]; then
+            echo "Error: Sample ${sample_name}.fq.gz not found in samples.json" >&2
+            exit 1
+        else
+            gdown $id --output ${sample_name}.fq.gz
+        fi
+    done < $popmap
     """
 }
 
@@ -27,6 +39,7 @@ process optimization {
     
     input:
     file samples from samples_ch.collect()
+    file popmap from popmap_ch
 
 // Make sure that all files are available and create the popmap file or download it. 
 // Perhaps input it as a parameter?
@@ -52,5 +65,5 @@ process postprocessing {
 }
 
 workflow {
-    optimization | preprocessing | pseudoreference | postprocessing
+    download_samples
 }
