@@ -24,7 +24,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-test-buildx-
 
-    - name: create test Dockerfile
+    - name: Create test Dockerfile
       run: cat Dockerfile tests/Dockerfile.extended > Dockerfile.test
 
     - name: Build test Docker image
