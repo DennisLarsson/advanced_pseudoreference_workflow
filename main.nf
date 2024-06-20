@@ -17,7 +17,7 @@ process download_samples {
     path popmap from popmap_ch
 
     output:
-    path '*.fq.gz'
+    file('/samples/') into folder_ch
 
     script:
     """
