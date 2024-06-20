@@ -22,13 +22,13 @@ process download_samples {
     script:
     """
     while IFS= read -r line; do
-        sample_name=$(echo "$line" | cut -f1)
-        id=$(jq -r --arg key "${sample_name}.fq.gz" '.[$key]' $samples_json)
-        if [[ $id == "null" ]]; then
-            echo "Error: Sample ${sample_name}.fq.gz not found in samples.json" >&2
+        sample_name=$(echo "\$line" | cut -f1)
+        id=$(jq -r --arg key "\${sample_name}.fq.gz" '.[\$key]' $samples_json)
+        if [[ \$id == "null" ]]; then
+            echo "Error: Sample \${sample_name}.fq.gz not found in samples.json" >&2
             exit 1
         else
-            gdown $id --output "${sample_name}.fq.gz"
+            gdown \$id --output "\${sample_name}.fq.gz"
         fi
     done < $popmap
     """
