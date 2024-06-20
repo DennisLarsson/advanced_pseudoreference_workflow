@@ -10,11 +10,14 @@ Channel
     .set { popmap_ch }
 
 process download_samples {
-    container 'ghcr.io/dennislarsson/download-image:refs-tags-1.1.0-474f9e'
+    container 'ghcr.io/dennislarsson/download-image:download-into-folder-07f50d7'
 
     input:
-    file samples_json from samples_json_ch
-    file popmap from popmap_ch
+    path samples_json from samples_json_ch
+    path popmap from popmap_ch
+
+    output:
+    path '*.fq.gz'
 
     script:
     """
