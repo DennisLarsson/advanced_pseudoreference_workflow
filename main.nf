@@ -21,6 +21,7 @@ process download_samples {
 
     script:
     """
+    echo "Running download_samples"
     mkdir -p samples
     ./download_samples.sh $samples_json $popmap samples
     """
