@@ -10,18 +10,19 @@ Channel
     .set { popmap_ch }
 
 process download_samples {
-    container 'ghcr.io/dennislarsson/download-image:download-into-folder-07f50d7'
+    container 'ghcr.io/dennislarsson/download-image:download-into-folder-4ed51e5'
 
     input:
     path samples_json from samples_json_ch
     path popmap from popmap_ch
 
     output:
-    file('/samples/') into folder_ch
+    file('samples') into folder_ch
 
     script:
     """
-    ./download_samples.sh $samples_json $popmap
+    mkdir -p samples
+    ./download_samples.sh $samples_json $popmap samples
     """
 }
 
