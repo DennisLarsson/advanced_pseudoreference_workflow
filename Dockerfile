@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 RUN wget -qO- https://get.nextflow.io | bash && \
     chmod +x nextflow && \
     mv nextflow /usr/local/bin
-ENV NXF_VER=23.10.1
+ENV NXF_VER=24.04.0-edge
 RUN nextflow info
 
 # Set the working directory
