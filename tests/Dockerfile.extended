@@ -1,6 +1,6 @@
 FROM workflow AS workflow-test
 COPY tests/test_samples.json .
 COPY tests/popmap_test .
-COPY tests/run_test.sh .
+COPY tests/run_tests.sh .
 
 CMD ["./run_test.sh"]
