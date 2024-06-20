@@ -39,7 +39,7 @@ jobs:
         load: true
 
     - name: Run test Docker container
-      run: docker run nextflow-test
+      run: docker run -it nextflow-test
 
   build:
     needs: test
