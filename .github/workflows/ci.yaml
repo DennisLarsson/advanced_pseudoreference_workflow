@@ -39,7 +39,7 @@ jobs:
         load: true
 
     - name: Run test Docker container
-      run: docker run -i nextflow-test
+      run: docker run --privileged -v /var/run/docker.sock:/var/run/docker.sock -v ghcr.io/dennislarsson/download-image:download-into-folder-4ed51e5
 
   build:
     needs: test
