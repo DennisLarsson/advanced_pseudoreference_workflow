@@ -1,7 +1,0 @@
-FROM workflow AS workflow-test
-COPY tests/test_samples.json .
-COPY tests/popmap_test .
-COPY tests/run_tests.sh .
-
-RUN chmod +x run_tests.sh
-CMD ["./run_tests.sh"]
