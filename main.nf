@@ -37,7 +37,11 @@ process parameter_optimization {
 
     script:
     """
-    /parameter_optimization.py --popmap $popmap --samples $samples/ --min_val $param_min_val --max_val $param_max_val
+    /parameter_optimization.py \
+        --popmap $popmap \
+        --samples $samples/ \
+        --min_val $param_min_val \
+        --max_val $param_max_val
     """
 }
 
@@ -66,7 +70,12 @@ workflow {
     
     download_samples(samples_json_ch, popmap_ch)
 
-    parameter_optimization(download_samples.out.samples_ch, popmap_ch, parameter_max_val_ch, parameter_min_val_ch)
+    parameter_optimization(
+        download_samples.out.samples_ch, 
+        popmap_ch, 
+        parameter_max_val_ch, 
+        parameter_min_val_ch
+    )
 
     parameter_optimization.out.best_parameters_ch.view { file -> return file.text }
     parameter_optimization.out.param_vals_nm_ch.view { file -> return file.text }
