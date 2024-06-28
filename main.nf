@@ -20,6 +20,22 @@ process download_samples {
     """
 }
 
+process parameter_optimization {
+    container 'ghcr.io/dennislarsson/stacks2-image:refs-tags-1.1.1-4480f63'
+
+    input:
+    path samples
+    path popmap
+
+    output:
+    path('best_params.txt'), emit: best_parameters_ch
+
+    script:
+    """
+    /parameter_optimization.py --popmap /$popmap --samples /$samples/ --min_val 1 --max_val 3
+    """
+}
+
 workflow {
 
     Channel
@@ -31,5 +47,8 @@ workflow {
         .set { popmap_ch }
     
     download_samples(samples_json_ch, popmap_ch)
-    download_samples.out.samples_ch.view()
+
+    parameter_optimization(download_samples.out.samples_ch, popmap_ch)
+
+    parameter_optimization.out.best_parameters_ch.view()
 }
