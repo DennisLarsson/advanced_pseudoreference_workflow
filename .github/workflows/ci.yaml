@@ -26,5 +26,8 @@ jobs:
         chmod +x nextflow
         mv nextflow /usr/local/bin
 
+    - name: Debug - Pull Docker Image
+      run: docker pull ghcr.io/dennislarsson/download-image:download-into-folder-4ed51e5
+
     - name: Run test
       run: nextflow run main.nf -c nextflow.config --samples_json tests/test_samples.json --popmap tests/popmap_test
