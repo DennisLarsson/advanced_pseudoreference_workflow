@@ -35,4 +35,4 @@ jobs:
         --samples_json tests/test_samples.json \
         --popmap tests/popmap_test \
         --parameter_max_val 4 \
-        --parameter_min_val 1
+        --parameter_min_val 2
