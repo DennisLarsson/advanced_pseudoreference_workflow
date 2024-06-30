@@ -32,8 +32,9 @@ process parameter_optimization {
     val param_min_val
 
     output:
-    path('best_params.txt'), emit: best_parameters_ch
+    path('best_params_path.txt'), emit: best_parameters_ch
     path('param_vals_nm.txt'), emit: param_vals_nm_ch
+    path('stacks_best_assembly'), emit: best_assembly_ch
 
     script:
     """
@@ -42,6 +43,9 @@ process parameter_optimization {
         --samples $samples/ \
         --min_val $param_min_val \
         --max_val $param_max_val
+    
+    PATH_BEST_ASSEMBLY=\$(cat best_params_path.txt)
+    cp -r \${PATH_BEST_ASSEMBLY}/ stacks_best_assembly/
     """
 }
 
