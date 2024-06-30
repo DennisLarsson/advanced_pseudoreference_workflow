@@ -23,7 +23,7 @@ process download_samples {
 }
 
 process parameter_optimization {
-    container 'ghcr.io/dennislarsson/stacks2-image:refs-tags-1.1.1-4480f63'
+    container 'ghcr.io/dennislarsson/stacks2-image:refs-tags-1.2.0-5f371f7'
 
     input:
     path samples
