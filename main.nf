@@ -2,8 +2,8 @@
 
 params.samples_json = "samples.json"
 params.popmap = "popmap"
-params.parameter_max_val = "3"
 params.parameter_min_val = "1"
+params.parameter_max_val = "3"
 
 process download_samples {
     container 'ghcr.io/dennislarsson/download-image:refs-tags-1.2.0-43ecb89'
@@ -28,8 +28,8 @@ process parameter_optimization {
     input:
     path samples
     path popmap
-    val param_max_val
     val param_min_val
+    val param_max_val
 
     output:
     path('best_params_path.txt'), emit: best_parameters_ch
@@ -53,8 +53,8 @@ workflow {
 
     println("samples_json: ${params.samples_json}")
     println("popmap: ${params.popmap}")
-    println("parameter_max_val: ${params.parameter_max_val}")
     println("parameter_min_val: ${params.parameter_min_val}")
+    println("parameter_max_val: ${params.parameter_max_val}")
 
     Channel
         .fromPath(params.samples_json)
@@ -63,22 +63,24 @@ workflow {
     Channel
         .fromPath(params.popmap)
         .set { popmap_ch }
+
+    Channel
+        .value(params.parameter_min_val)
+        .set { parameter_min_val_ch }
     
     Channel
         .value(params.parameter_max_val)
         .set { parameter_max_val_ch }
     
-    Channel
-        .value(params.parameter_min_val)
-        .set { parameter_min_val_ch }
+
     
     download_samples(samples_json_ch, popmap_ch)
 
     parameter_optimization(
         download_samples.out.samples_ch, 
         popmap_ch, 
-        parameter_max_val_ch, 
-        parameter_min_val_ch
+        parameter_min_val_ch, 
+        parameter_max_val_ch
     )
 
     parameter_optimization.out.best_parameters_ch.view { file -> return file.text }
