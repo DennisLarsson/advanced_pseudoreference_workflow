@@ -6,7 +6,7 @@ params.parameter_min_val = "1"
 params.parameter_max_val = "3"
 
 process download_samples {
-    container 'ghcr.io/dennislarsson/download-image:refs-tags-1.2.0-43ecb89'
+    container 'ghcr.io/dennislarsson/download-image:refs-tags-1.3.0-c2c2cd0'
 
     input:
     path samples_json 
