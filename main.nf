@@ -23,7 +23,7 @@ process download_samples {
 }
 
 process parameter_optimization {
-    container 'ghcr.io/dennislarsson/stacks2-image:refs-tags-1.2.0-5f371f7'
+    container 'ghcr.io/dennislarsson/stacks2-image:refs-tags-1.3.0-3f3dfa7'
 
     input:
     path samples
@@ -46,7 +46,14 @@ process parameter_optimization {
     
     PATH_BEST_ASSEMBLY=\$(cat best_params_path.txt)
     cp -r \${PATH_BEST_ASSEMBLY}/ stacks_best_assembly/
+
+    mkdir stacks_best_assembly/populations_R04
+    populations --in-path stacks_best_assembly \
+      --out-path stacks_best_assembly/populations_R04 \
+      --popmap $popmap \
+      -R 0.4
     """
+    // Figure out how to set the threads
 }
 
 workflow {
