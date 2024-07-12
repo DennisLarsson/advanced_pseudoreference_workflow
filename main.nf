@@ -39,10 +39,10 @@ process parameter_optimization {
     script:
     """
     /parameter_optimization.py \
-        --popmap $popmap \
-        --samples $samples/ \
-        --min_val $param_min_val \
-        --max_val $param_max_val
+      --popmap $popmap \
+      --samples $samples/ \
+      --min_val $param_min_val \
+      --max_val $param_max_val
     
     PATH_BEST_ASSEMBLY=\$(cat best_params_path.txt)
     cp -r \${PATH_BEST_ASSEMBLY}/ stacks_best_assembly/
@@ -54,6 +54,50 @@ process parameter_optimization {
       -R 0.4
     """
     // Figure out how to set the threads
+}
+
+process preprocess_catalog {
+    container 'ghcr.io/dennislarsson/preprocess_catalog:Install-tools-1c2ca7f'
+
+    input:
+    path best_assembly
+
+    output:
+    path('catalog_R04_max10snp_blasted.fa.gz'), emit: preprocessed_catalog_ch
+
+    script:
+    """
+    cat $best_assembly/populations_R04/populations.sumstats.tsv | \
+      grep -v "^#" | \
+      cut -f 1,4 | \
+      sort -n | \
+      uniq | \
+      cut -f 1 | \
+      uniq -c | \
+      awk '$1 <= 10 {print $2}' > /whitelist_R04_max10snp
+
+    gunzip $best_assembly/catalog.fa.gz
+    
+    /filter_catalog.py 
+      -i $best_assembly/catalog.fa \
+      -w /whitelist_R04_max10snp \
+      -o /catalog_R04_max10snp.fa
+
+    blastn -db nt_euk \
+        -query catalog_R04_max10snp.fa \
+        -task blastn \
+        -max_target_seqs 1 \
+        -evalue 5 \
+        -outfmt "10 delim=@ qseqid qlen sscinames sblastnames sskingdoms stitle evalue bitscore score length nident qcovs" \
+        -out results.out -remote
+
+    ./filter_nonplant_loci.py \
+        -b results.out \
+        -c catalog_R04_max10snp.fa \
+        -o catalog_R04_max10snp_blasted.fa
+    
+    gzip catalog_R04_max10snp_blasted.fa
+    """
 }
 
 workflow {
@@ -90,6 +134,5 @@ workflow {
         parameter_max_val_ch
     )
 
-    parameter_optimization.out.best_parameters_ch.view { file -> return file.text }
-    parameter_optimization.out.param_vals_nm_ch.view { file -> return file.text }
+    preprocess_catalog(parameter_optimization.out.best_assembly_ch)
 }
