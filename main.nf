@@ -79,9 +79,9 @@ process preprocess_catalog {
     gunzip $best_assembly/catalog.fa.gz
     
     /filter_catalog.py 
-      -i $best_assembly/catalog.fa \
-      -w /whitelist_R04_max10snp \
-      -o /catalog_R04_max10snp.fa
+      --catalog $best_assembly/catalog.fa \
+      --whitelist /whitelist_R04_max10snp \
+      > catalog_R04_max10snp.fa
 
     blastn -db nt_euk \
       -query catalog_R04_max10snp.fa \
