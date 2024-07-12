@@ -74,7 +74,7 @@ process preprocess_catalog {
       uniq | \
       cut -f 1 | \
       uniq -c | \
-      awk '$1 <= 10 {print $2}' > /whitelist_R04_max10snp
+      awk '\$1 <= 10 {print \$2}' > /whitelist_R04_max10snp
 
     gunzip $best_assembly/catalog.fa.gz
     
