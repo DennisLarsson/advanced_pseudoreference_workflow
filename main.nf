@@ -74,13 +74,13 @@ process preprocess_catalog {
       uniq | \
       cut -f 1 | \
       uniq -c | \
-      awk '\$1 <= 10 {print \$2}' > /whitelist_R04_max10snp
+      awk '\$1 <= 10 {print \$2}' > whitelist_R04_max10snp
 
     gunzip $best_assembly/catalog.fa.gz
     
     /filter_catalog.py 
       --catalog $best_assembly/catalog.fa \
-      --whitelist /whitelist_R04_max10snp \
+      --whitelist whitelist_R04_max10snp \
       > catalog_R04_max10snp.fa
 
     blastn -db nt_euk \
@@ -98,8 +98,11 @@ process preprocess_catalog {
     
     gzip catalog_R04_max10snp_blasted.fa
     """
+    // Make filter_nonplant_loci.py testable and make unittests
 }
 
+// Create a container with nextflow and necessary files to run it which can be used by the CI to speed up 
+// the testing process by avoiding installing stuff every time
 workflow {
 
     println("samples_json: ${params.samples_json}")
@@ -122,8 +125,6 @@ workflow {
     Channel
       .value(params.parameter_max_val)
       .set { parameter_max_val_ch }
-    
-
     
     download_samples(samples_json_ch, popmap_ch)
 
