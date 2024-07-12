@@ -84,17 +84,17 @@ process preprocess_catalog {
       -o /catalog_R04_max10snp.fa
 
     blastn -db nt_euk \
-        -query catalog_R04_max10snp.fa \
-        -task blastn \
-        -max_target_seqs 1 \
-        -evalue 5 \
-        -outfmt "10 delim=@ qseqid qlen sscinames sblastnames sskingdoms stitle evalue bitscore score length nident qcovs" \
-        -out results.out -remote
+      -query catalog_R04_max10snp.fa \
+      -task blastn \
+      -max_target_seqs 1 \
+      -evalue 5 \
+      -outfmt "10 delim=@ qseqid qlen sscinames sblastnames sskingdoms stitle evalue bitscore score length nident qcovs" \
+      -out results.out -remote
 
     ./filter_nonplant_loci.py \
-        -b results.out \
-        -c catalog_R04_max10snp.fa \
-        -o catalog_R04_max10snp_blasted.fa
+      -b results.out \
+      -c catalog_R04_max10snp.fa \
+      -o catalog_R04_max10snp_blasted.fa
     
     gzip catalog_R04_max10snp_blasted.fa
     """
@@ -108,30 +108,30 @@ workflow {
     println("parameter_max_val: ${params.parameter_max_val}")
 
     Channel
-        .fromPath(params.samples_json)
-        .set { samples_json_ch }
+      .fromPath(params.samples_json)
+      .set { samples_json_ch }
 
     Channel
-        .fromPath(params.popmap)
-        .set { popmap_ch }
+      .fromPath(params.popmap)
+      .set { popmap_ch }
 
     Channel
-        .value(params.parameter_min_val)
-        .set { parameter_min_val_ch }
+      .value(params.parameter_min_val)
+      .set { parameter_min_val_ch }
     
     Channel
-        .value(params.parameter_max_val)
-        .set { parameter_max_val_ch }
+      .value(params.parameter_max_val)
+      .set { parameter_max_val_ch }
     
 
     
     download_samples(samples_json_ch, popmap_ch)
 
     parameter_optimization(
-        download_samples.out.samples_ch, 
-        popmap_ch, 
-        parameter_min_val_ch, 
-        parameter_max_val_ch
+      download_samples.out.samples_ch, 
+      popmap_ch, 
+      parameter_min_val_ch, 
+      parameter_max_val_ch
     )
 
     preprocess_catalog(parameter_optimization.out.best_assembly_ch)
