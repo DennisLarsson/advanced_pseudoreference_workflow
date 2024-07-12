@@ -57,7 +57,7 @@ process parameter_optimization {
 }
 
 process preprocess_catalog {
-    container 'ghcr.io/dennislarsson/preprocess_catalog:Install-tools-1c2ca7f'
+    container 'ghcr.io/dennislarsson/preprocess_catalog:Install-tools-e447b24'
 
     input:
     path best_assembly
@@ -78,7 +78,7 @@ process preprocess_catalog {
 
     gunzip $best_assembly/catalog.fa.gz
     
-    /filter_catalog.py 
+    /filter_catalog.py \
       --catalog $best_assembly/catalog.fa \
       --whitelist whitelist_R04_max10snp \
       > catalog_R04_max10snp.fa
@@ -91,7 +91,7 @@ process preprocess_catalog {
       -outfmt "10 delim=@ qseqid qlen sscinames sblastnames sskingdoms stitle evalue bitscore score length nident qcovs" \
       -out results.out -remote
 
-    ./filter_nonplant_loci.py \
+    /filter_nonplant_loci.py \
       -b results.out \
       -c catalog_R04_max10snp.fa \
       -o catalog_R04_max10snp_blasted.fa
