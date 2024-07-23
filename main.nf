@@ -57,7 +57,7 @@ process parameter_optimization {
 }
 
 process preprocess_catalog {
-    container 'ghcr.io/dennislarsson/preprocess_catalog:Install-tools-e447b24'
+    container 'ghcr.io/dennislarsson/preprocess_catalog:refs-tags-1.0.0-b7d7fbc'
 
     input:
     path best_assembly
@@ -98,11 +98,8 @@ process preprocess_catalog {
     
     gzip catalog_R04_max10snp_blasted.fa
     """
-    // Make filter_nonplant_loci.py testable and make unittests
 }
 
-// Create a container with nextflow and necessary files to run it which can be used by the CI to speed up 
-// the testing process by avoiding installing stuff every time
 workflow {
 
     println("samples_json: ${params.samples_json}")
