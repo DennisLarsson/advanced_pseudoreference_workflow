@@ -57,7 +57,7 @@ process parameter_optimization {
 }
 
 process preprocess_catalog {
-    container 'ghcr.io/dennislarsson/preprocess_catalog:add-blastdb-folder-ec87734'
+    container 'ghcr.io/dennislarsson/preprocess_catalog:refs-tags-1.1.0-a2d6a3a'
 
     input:
     path best_assembly
@@ -119,8 +119,8 @@ process pseudo_refmap {
     samtools faidx reference/catalog.fa.gz
     
     picard CreateSequenceDictionary \
-      R=reference/catalog.fa.gz \
-      O=reference/catalog.fa.gz.dict
+      -R reference/catalog.fa.gz \
+      -O reference/catalog.fa.gz.dict
     
     bowtie2-build reference/catalog.fa.gz reference/catalog.fa.gz
     """
