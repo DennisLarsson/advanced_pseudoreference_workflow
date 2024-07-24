@@ -57,7 +57,7 @@ process parameter_optimization {
 }
 
 process preprocess_catalog {
-    container 'ghcr.io/dennislarsson/preprocess_catalog:refs-tags-1.0.0-b7d7fbc'
+    container 'ghcr.io/dennislarsson/preprocess_catalog:add-blastdb-folder-ec87734'
 
     input:
     path best_assembly
@@ -67,6 +67,10 @@ process preprocess_catalog {
 
     script:
     """
+    echo "BLASTDB is set to \$BLASTDB"
+    echo "Contents of /blastdb:"
+    ls /blastdb
+
     cat $best_assembly/populations_R04/populations.sumstats.tsv | \
       grep -v "^#" | \
       cut -f 1,4 | \
@@ -96,7 +100,29 @@ process preprocess_catalog {
       -c catalog_R04_max10snp.fa \
       -o catalog_R04_max10snp_blasted.fa
     
-    gzip catalog_R04_max10snp_blasted.fa
+    bgzip catalog_R04_max10snp_blasted.fa
+    """
+}
+
+process pseudo_refmap {
+    container 'ghcr.io/dennislarsson/pseudo-refmap:install-tools-2401ea2'
+
+    input:
+    path samples
+    path popmap
+    path preprocessed_catalog
+
+    script:
+    """
+    mkdir reference
+    cp $preprocessed_catalog reference/catalog.fa.gz
+    samtools faidx reference/catalog.fa.gz
+    
+    picard CreateSequenceDictionary \
+      R=reference/catalog.fa.gz \
+      O=reference/catalog.fa.gz.dict
+    
+    bowtie2-build reference/catalog.fa.gz reference/catalog.fa.gz
     """
 }
 
@@ -133,4 +159,10 @@ workflow {
     )
 
     preprocess_catalog(parameter_optimization.out.best_assembly_ch)
+
+    pseudo_refmap(
+      download_samples.out.samples_ch, 
+      popmap_ch, 
+      preprocess_catalog.out.preprocessed_catalog_ch
+    )
 }
