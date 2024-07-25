@@ -123,7 +123,7 @@ process pseudo_refmap {
     
     picard CreateSequenceDictionary \
       -R reference/catalog.fa.gz \
-      -O reference/catalog.fa.gz.dict
+      -O reference/catalog.dict
     
     bowtie2-build reference/catalog.fa.gz reference/catalog.fa.gz
 
