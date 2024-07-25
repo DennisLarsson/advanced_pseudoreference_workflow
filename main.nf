@@ -103,7 +103,7 @@ process preprocess_catalog {
 }
 
 process pseudo_refmap {
-    container 'ghcr.io/dennislarsson/pseudo-refmap:install-tools-2d291ec'
+    container 'ghcr.io/dennislarsson/pseudo-refmap:refs-tags-1.0.0-7346ed5'
 
     input:
     path samples
