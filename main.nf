@@ -1,5 +1,3 @@
-//def parameters = new groovy.json.JsonSlurper().parseText(file(params.parameters).text)
-
 params.samples_json = "samples.json"
 params.popmap = "popmap"
 params.parameter_min_val = "1"
