@@ -69,3 +69,6 @@ This Nextflow workflow automates a **population genomics pipeline**, focusing on
 - **Bowtie2, Picard, GATK, Samtools**: For alignment and processing.
 
 ---
+
+## Test Run
+Inside the folder `tests` are the files `popmap_test` and `test_samples.json`, which provides the popmap for for test samples and the ids of the tests samples to be downloaded from Google Drive and used for the test. The test run is set to run using `parameter_min_val` 2 and `parameter_max_val` 4, as set up in the CI job step `Run test` (see /.github/workflows/ci.yaml).
