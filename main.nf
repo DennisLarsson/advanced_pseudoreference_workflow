@@ -11,10 +11,13 @@ workflow {
     DOWNLOAD_SAMPLES_WF (
         ch_samples_json,
         ch_popmap
-        ).set { ch_samples }
+        )
+
+        ch_samples_folders = DOWNLOAD_SAMPLES_WF.out.samples_folders
+        ch_samples_files = DOWNLOAD_SAMPLES_WF.out.samples_files
     
     PARAMETER_OPTIMIZATION_WF (
-        ch_samples,
+        ch_samples_folders,
         ch_popmap,
         ch_parameter_min_val,
         ch_parameter_max_val

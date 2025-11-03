@@ -6,7 +6,8 @@ process DOWNLOAD_SAMPLES {
         path ch_popmap 
 
     output:
-        path('samples'), emit: ch_samples
+        path('samples'), emit: ch_samples_folder
+        path('samples/*.fa.gz'), emit: ch_samples_files
 
     script:
         """
