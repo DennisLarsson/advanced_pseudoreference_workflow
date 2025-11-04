@@ -13,11 +13,11 @@ workflow {
         ch_popmap
         )
 
-        ch_samples_folders = DOWNLOAD_SAMPLES_WF.out.samples_folders
-        ch_samples_files = DOWNLOAD_SAMPLES_WF.out.samples_files
+        ch_samples_folder = DOWNLOAD_SAMPLES_WF.out.ch_samples_folder
+        ch_samples_files = DOWNLOAD_SAMPLES_WF.out.ch_samples_files
     
     PARAMETER_OPTIMIZATION_WF (
-        ch_samples_folders,
+        ch_samples_folder,
         ch_popmap,
         ch_parameter_min_val,
         ch_parameter_max_val
