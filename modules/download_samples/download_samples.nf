@@ -7,7 +7,7 @@ process DOWNLOAD_SAMPLES {
 
     output:
         path('samples'), emit: ch_samples_folder
-        path('samples/*.fa.gz'), emit: ch_samples_files
+        path('samples/*.fq.gz'), emit: ch_samples_files
 
     script:
         """
