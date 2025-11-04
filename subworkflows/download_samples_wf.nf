@@ -12,6 +12,6 @@ workflow DOWNLOAD_SAMPLES_WF {
         )
 
     emit:
-        samples_folder = DOWNLOAD_SAMPLES.out.ch_samples_folder
-        samples_files = DOWNLOAD_SAMPLES.out.ch_samples_files
+        ch_samples_folder = DOWNLOAD_SAMPLES.out.ch_samples_folder
+        ch_samples_files = DOWNLOAD_SAMPLES.out.ch_samples_files
 }
