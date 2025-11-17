@@ -1,6 +1,7 @@
 include { DOWNLOAD_SAMPLES_WF       } from './subworkflows/download_samples_wf'
 include { PARAMETER_OPTIMIZATION_WF } from './subworkflows/parameter_optimization_wf'
 include { PREPROCESS_CATALOG        } from './subworkflows/preprocess_catalog_wf'
+include { PSEUDO_REFMAP_WF          } from './subworkflows/pseudo_refmap_wf'
 
 workflow {
     Channel.fromPath(params.samples_json).set { ch_samples_json }
@@ -32,4 +33,10 @@ workflow {
     )
 
     ch_catalog_processed = PREPROCESS_CATALOG.out.ch_catalog_final
+
+    PSEUDO_REFMAP_WF (
+        ch_samples_files,
+        ch_popmap,
+        ch_catalog_processed
+    )
 }
